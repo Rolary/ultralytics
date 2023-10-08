@@ -317,7 +317,8 @@ def safe_download(
         desc = f"Downloading {url if gdrive else clean_url(url)} to '{f}'"
         LOGGER.info(f"{desc}...")
         f.parent.mkdir(parents=True, exist_ok=True)  # make directory if missing
-        check_disk_space(url)
+        # todo 先不检查磁盘空间
+        # check_disk_space(url)
         for i in range(retry + 1):
             try:
                 if curl or i > 0:  # curl download with retry, continue
