@@ -486,7 +486,7 @@ def check_file(file, suffix="", download=True, hard=True):
         return file
     elif download and file.lower().startswith(("https://", "http://", "rtsp://", "rtmp://", "tcp://")):  # download
         url = file  # warning: Pathlib turns :// -> :/
-        file = url2file(file)  # '%2F' to '/', split https://url.com/file.txt?auth
+        file = "runs/imgs/" + url2file(file)  # '%2F' to '/', split https://url.com/file.txt?auth
         if Path(file).exists():
             LOGGER.info(f"Found {clean_url(url)} locally at {file}")  # file already exists
         else:
