@@ -15,6 +15,7 @@ import uuid
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Union
+from urllib.parse import urlparse, parse_qs
 
 import cv2
 import matplotlib.pyplot as plt
@@ -1015,6 +1016,13 @@ def clean_url(url):
 
 def url2file(url):
     """Convert URL to filename, i.e. https://url.com/file.txt?auth -> file.txt."""
+    query_parameters = parse_qs(urlparse(url).query)
+    if 'response-content-disposition' in query_parameters:
+        disposition_value = query_parameters['response-content-disposition'][0]  # 获取sign参数的值
+        # 解析sign参数的值，以获取filename参数
+        disposition_parameters = parse_qs(disposition_value)
+        if 'attachment;filename' in disposition_parameters:
+            return disposition_parameters['attachment;filename'][0].replace("\"", "")
     return Path(clean_url(url)).name
 
 
