@@ -1012,7 +1012,8 @@ def url2file(url):
         # 解析sign参数的值，以获取filename参数
         disposition_parameters = parse_qs(disposition_value)
         if 'attachment;filename' in disposition_parameters:
-            return disposition_parameters['attachment;filename'][0].replace("\"", "")
+            suffix = disposition_parameters['attachment;filename'][0].replace("\"", "").split(".")[-1]
+            return urlparse(url).path.split("/")[-1].split("-")[-1] + "." + suffix
     return Path(clean_url(url)).name
 
 
