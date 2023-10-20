@@ -17,7 +17,7 @@ with open('config.yml', 'r') as config_file:
 
 # 访问配置项
 # 预加载YOLO模型
-model = YOLO("../model/page/yolov8xForPage.pt")
+model = YOLO("../model/page/model_- 8 october 2023 18_18.pt")
 OCR_API_URL = "https://open.easst.cn/openapi/rest/common/ocr"
 OCR_APP_ID = config['ocr']['app_id']
 OCR_APP_SECRET = config['ocr']['app_secret']
@@ -30,6 +30,7 @@ def predict():
         data = json.loads(request.data)
         # image_file = request.files['image']
         base64_image = data.get('image', '')
+        confidence = data.get('confidence', 0.4)
 
         if base64_image:
             image_data = base64.b64decode(base64_image)
@@ -37,7 +38,7 @@ def predict():
         else:
             image = data.get('url', '')
         # 调用YOLO模型进行对象检测
-        results = model.predict(source=image, conf=0.4, save = True)
+        results = model.predict(source=image, conf=confidence, save=True)
 
         # 检查是否有检测结果
         if not results:
