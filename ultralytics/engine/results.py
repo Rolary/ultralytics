@@ -402,7 +402,8 @@ class Results(SimpleClass):
             conf = row[-2]
             class_id = int(row[-1])
             name = self.names[class_id]
-            result = {"name": name, "class": class_id, "confidence": conf, "box": box}
+            orig_shape = self.orig_shape
+            result = {"name": name, "class": class_id, "confidence": conf, "box": box, "origShape": orig_shape}
             if self.boxes.is_track:
                 result["track_id"] = int(row[-3])  # track ID
             if self.masks:
