@@ -140,10 +140,10 @@ def check_source(source):
                 # 解析sign参数的值，以获取filename参数
                 disposition_parameters = parse_qs(disposition_value)
                 if 'attachment;filename' in disposition_parameters:
-                    cos_file_name = disposition_parameters['attachment;filename'][0].replace("\"", "")
+                    cos_file_name = disposition_parameters['attachment;filename'][0].replace("\"", "").replace("'", "")
 
         is_file = (Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
-                   or Path(cos_file_name).suffix[1:] in (IMG_FORMATS + VID_FORMATS))
+                   or Path(cos_file_name).suffix[1:].lower() in (IMG_FORMATS + VID_FORMATS))
         webcam = source.isnumeric() or source.endswith(".streams") or (is_url and not is_file)
         screenshot = source.lower() == "screen"
         if is_url and is_file:
