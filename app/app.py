@@ -31,7 +31,7 @@ def predict():
         # image_file = request.files['image']
         key = data.get('image', '')
         if key != 'ebuilder':
-            return jsonify({'status': False, 'code': 500, 'error': '无效的key'})
+            return jsonify({'status': False, 'code': 401, 'error': '无效的key'})
         base64_image = data.get('image', '')
         confidence = data.get('confidence', 0.4)
 
@@ -61,7 +61,7 @@ def ocr():
         data = json.loads(request.data)
         key = data.get('image', '')
         if key != 'ebuilder':
-            return jsonify({'status': False, 'code': 500, 'error': '无效的key'})
+            return jsonify({'status': False, 'code': 401, 'error': '无效的key'})
         base64_image = data.get('image', '')
 
         # 获取当前时间戳（毫秒数）
