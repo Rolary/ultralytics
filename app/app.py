@@ -29,7 +29,7 @@ def predict():
         # 获取上传的图像文件
         data = json.loads(request.data)
         # image_file = request.files['image']
-        key = data.get('image', '')
+        key = data.get('key', '')
         if key != 'ebuilder':
             return jsonify({'status': False, 'code': 401, 'error': '无效的key'})
         base64_image = data.get('image', '')
@@ -59,7 +59,7 @@ def ocr():
     try:
         # 获取上传的图像文件
         data = json.loads(request.data)
-        key = data.get('image', '')
+        key = data.get('key', '')
         if key != 'ebuilder':
             return jsonify({'status': False, 'code': 401, 'error': '无效的key'})
         base64_image = data.get('image', '')
