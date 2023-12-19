@@ -385,7 +385,7 @@ class Results(SimpleClass):
                 BGR=True,
             )
 
-    def tojson(self, normalize=False):
+    def tojson(self, normalize=False, has_origin_shape=False):
         """Convert the object to JSON format."""
         if self.probs is not None:
             LOGGER.warning("Warning: Classify task do not support `tojson` yet.")
@@ -394,7 +394,7 @@ class Results(SimpleClass):
         import json
 
         # Create list of detection dictionaries
-        results = []
+        comps = []
         data = self.boxes.data.cpu().tolist()
         h, w = self.orig_shape if normalize else (1, 1)
         for i, row in enumerate(data):  # xyxy, track_id if tracking, conf, class_id
@@ -402,8 +402,7 @@ class Results(SimpleClass):
             conf = row[-2]
             class_id = int(row[-1])
             name = self.names[class_id]
-            orig_shape = self.orig_shape
-            result = {"name": name, "class": class_id, "confidence": conf, "box": box, "origShape": orig_shape}
+            result = {"name": name, "class": class_id, "confidence": conf, "box": box, "origShape": self.orig_shape}
             if self.boxes.is_track:
                 result["track_id"] = int(row[-3])  # track ID
             if self.masks:
@@ -412,11 +411,13 @@ class Results(SimpleClass):
             if self.keypoints is not None:
                 x, y, visible = self.keypoints[i].data[0].cpu().unbind(dim=1)  # torch Tensor
                 result["keypoints"] = {"x": (x / w).tolist(), "y": (y / h).tolist(), "visible": visible.tolist()}
-            results.append(result)
-
+            comps.append(result)
+        if has_origin_shape:
+            results = {"components": comps, "origShape": self.orig_shape}
+        else:
+            results = comps
         # Convert detections to JSON
         return json.dumps(results, indent=2)
-
 
 class Boxes(BaseTensor):
     """
