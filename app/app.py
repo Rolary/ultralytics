@@ -18,6 +18,7 @@ with open('config.yml', 'r') as config_file:
 # 访问配置项
 # 预加载YOLO模型
 model = YOLO("../model/page/model_- 18 december 2023 17_37.pt")
+modelV2 = YOLO("../model/page/model_- 22 december 2023 11_48.pt")
 OCR_API_URL = "https://open.easst.cn/openapi/rest/common/ocr"
 OCR_APP_ID = config['ocr']['app_id']
 OCR_APP_SECRET = config['ocr']['app_secret']
@@ -26,7 +27,7 @@ OCR_APP_SECRET = config['ocr']['app_secret']
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        return inner_predict(has_origin_shape=False)
+        return inner_predict()
     except Exception as e:
         return jsonify({'status': False, 'code': 500, 'error': str(e)})
 
@@ -34,12 +35,20 @@ def predict():
 @app.route('/predict/v2', methods=['POST'])
 def predict_v2():
     try:
-        return inner_predict(has_origin_shape=True)
+        return inner_predict(version=2)
     except Exception as e:
         return jsonify({'status': False, 'code': 500, 'error': str(e)})
 
 
-def inner_predict(has_origin_shape=False):
+@app.route('/predict/v3', methods=['POST'])
+def predict_v2():
+    try:
+        return inner_predict(version=3)
+    except Exception as e:
+        return jsonify({'status': False, 'code': 500, 'error': str(e)})
+
+
+def inner_predict(version=1):
     # 获取上传的图像文件
     data = json.loads(request.data)
     # image_file = request.files['image']
@@ -55,14 +64,16 @@ def inner_predict(has_origin_shape=False):
     else:
         image = data.get('url', '')
     # 调用YOLO模型进行对象检测
-    results = model.predict(source=image, conf=confidence, save=True)
-
+    inner_model = model if version <= 2 else modelV2
+    has_origin_shape = False if version <= 1 else True
+    results = inner_model.predict(source=image, conf=confidence, save=True)
     # 检查是否有检测结果
     if not results:
         return jsonify({'status': True, 'code': 200, 'data': {} if has_origin_shape else []})  # 如果没有检测到对象，返回一个空对象
 
     # 返回检测结果
-    return jsonify({'status': True, 'code': 200, 'data': json.loads(results[0].tojson(has_origin_shape=has_origin_shape))})
+    return jsonify(
+        {'status': True, 'code': 200, 'data': json.loads(results[0].tojson(has_origin_shape=has_origin_shape))})
 
 
 @app.route('/ocr', methods=['POST'])
