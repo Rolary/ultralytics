@@ -41,7 +41,7 @@ def predict_v2():
 
 
 @app.route('/predict/v3', methods=['POST'])
-def predict_v2():
+def predict_v3():
     try:
         return inner_predict(version=3)
     except Exception as e:
