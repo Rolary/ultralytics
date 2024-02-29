@@ -4,6 +4,7 @@ import requests
 import time
 import hashlib
 import sys
+
 sys.path.append("../ultralytics")
 
 from flask import Flask, request, jsonify
