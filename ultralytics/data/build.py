@@ -135,20 +135,21 @@ def check_source(source):
         cos_file_name = ""
         if is_url:
             query_parameters = parse_qs(urlparse(source).query)
-            if 'response-content-disposition' in query_parameters:
-                disposition_value = query_parameters['response-content-disposition'][0]  # 获取sign参数的值
+            if "response-content-disposition" in query_parameters:
+                disposition_value = query_parameters["response-content-disposition"][0]  # 获取sign参数的值
                 # 解析sign参数的值，以获取filename参数
                 disposition_parameters = parse_qs(disposition_value)
                 # 如果disposition_parameters为空，则需要base64 decode disposition_value
                 if not disposition_parameters:
                     decoded_bytes = base64.b64decode(disposition_value)
-                    disposition_value = decoded_bytes.decode('utf-8')
+                    disposition_value = decoded_bytes.decode("utf-8")
                     disposition_parameters = parse_qs(disposition_value)
-                if 'attachment;filename' in disposition_parameters:
-                    cos_file_name = disposition_parameters['attachment;filename'][0].replace("\"", "").replace("'", "")
+                if "attachment;filename" in disposition_parameters:
+                    cos_file_name = disposition_parameters["attachment;filename"][0].replace('"', "").replace("'", "")
 
-        is_file = (Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
-                   or Path(cos_file_name).suffix[1:].lower() in (IMG_FORMATS + VID_FORMATS))
+        is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS) or Path(cos_file_name).suffix[1:].lower() in (
+            IMG_FORMATS + VID_FORMATS
+        )
         webcam = source.isnumeric() or source.endswith(".streams") or (is_url and not is_file)
         screenshot = source.lower() == "screen"
         if is_url and is_file:

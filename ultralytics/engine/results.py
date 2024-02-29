@@ -419,6 +419,7 @@ class Results(SimpleClass):
         # Convert detections to JSON
         return json.dumps(results, indent=2)
 
+
 class Boxes(BaseTensor):
     """
     Manages detection boxes, providing easy access and manipulation of box coordinates, confidence scores, class
