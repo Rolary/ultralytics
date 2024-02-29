@@ -1,5 +1,5 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
-
+import base64
 import os
 import random
 from pathlib import Path
@@ -139,6 +139,11 @@ def check_source(source):
                 disposition_value = query_parameters['response-content-disposition'][0]  # 获取sign参数的值
                 # 解析sign参数的值，以获取filename参数
                 disposition_parameters = parse_qs(disposition_value)
+                # 如果disposition_parameters为空，则需要base64 decode disposition_value
+                if not disposition_parameters:
+                    decoded_bytes = base64.b64decode(disposition_value)
+                    disposition_value = decoded_bytes.decode('utf-8')
+                    disposition_parameters = parse_qs(disposition_value)
                 if 'attachment;filename' in disposition_parameters:
                     cos_file_name = disposition_parameters['attachment;filename'][0].replace("\"", "").replace("'", "")
 

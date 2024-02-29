@@ -1,5 +1,5 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
-
+import base64
 import contextlib
 import inspect
 import logging.config
@@ -1011,6 +1011,11 @@ def url2file(url):
         disposition_value = query_parameters['response-content-disposition'][0]  # 获取sign参数的值
         # 解析sign参数的值，以获取filename参数
         disposition_parameters = parse_qs(disposition_value)
+        # 如果disposition_parameters为空，则需要base64 decode disposition_value
+        if not disposition_parameters:
+            decoded_bytes = base64.b64decode(disposition_value)
+            disposition_value = decoded_bytes.decode('utf-8')
+            disposition_parameters = parse_qs(disposition_value)
         if 'attachment;filename' in disposition_parameters:
             suffix = disposition_parameters['attachment;filename'][0].replace("\"", "").split(".")[-1]
             return urlparse(url).path.split("/")[-1].split("-")[-1] + "." + suffix
