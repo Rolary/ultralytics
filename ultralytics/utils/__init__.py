@@ -1012,7 +1012,7 @@ def url2file(url):
         # 解析sign参数的值，以获取filename参数
         disposition_parameters = parse_qs(disposition_value)
         # 如果disposition_parameters为空，则需要base64 decode disposition_value
-        if not disposition_parameters:
+        if not disposition_parameters or "attachment;filename" not in disposition_parameters:
             decoded_bytes = base64.b64decode(disposition_value)
             disposition_value = decoded_bytes.decode("utf-8")
             disposition_parameters = parse_qs(disposition_value)

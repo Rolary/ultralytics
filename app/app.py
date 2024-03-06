@@ -3,9 +3,6 @@ import base64
 import requests
 import time
 import hashlib
-import sys
-
-sys.path.append("../ultralytics")
 
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
