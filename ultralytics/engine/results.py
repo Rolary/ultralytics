@@ -387,21 +387,10 @@ class Results(SimpleClass):
                 BGR=True,
             )
 
-    def summary(self, normalize=False, decimals=5):
+    def summary(self, normalize=False, decimals=5, has_origin_shape=False):
         """Convert the results to a summarized format."""
         # Create list of detection dictionaries
         comps = []
-        if self.probs is not None:
-            class_id = self.probs.top1
-            results.append(
-                {
-                    "name": self.names[class_id],
-                    "class": class_id,
-                    "confidence": round(self.probs.top1conf.item(), decimals),
-                }
-            )
-            return results
-
         is_obb = self.obb is not None
         data = self.obb if is_obb else self.boxes
         h, w = self.orig_shape if normalize else (1, 1)
@@ -412,7 +401,7 @@ class Results(SimpleClass):
             for j, b in enumerate(box):
                 xy[f"x{j + 1}"] = round(b[0] / w, decimals)
                 xy[f"y{j + 1}"] = round(b[1] / h, decimals)
-            result = {"name": self.names[class_id], "class": class_id, "confidence": conf, "box": xy}
+            result = {"name": self.names[class_id], "class": class_id, "confidence": conf, "box": xy, "origShape": self.orig_shape}
             if data.is_track:
                 result["track_id"] = int(row.id.item())  # track ID
             if self.masks:
@@ -427,15 +416,18 @@ class Results(SimpleClass):
                     "y": (y / h).numpy().round(decimals).tolist(),
                     "visible": visible.numpy().round(decimals).tolist(),
                 }
-            results.append(result)
-
+            comps.append(result)
+        if has_origin_shape:
+            results = {"components": comps, "origShape": self.orig_shape}
+        else:
+            results = comps
         return results
 
-    def tojson(self, normalize=False, decimals=5):
+    def tojson(self, normalize=False, decimals=5, has_origin_shape=False):
         """Convert the results to JSON format."""
         import json
 
-        return json.dumps(self.summary(normalize=normalize, decimals=decimals), indent=2)
+        return json.dumps(self.summary(normalize=normalize, decimals=decimals, has_origin_shape=has_origin_shape), indent=2)
 
 
 class Boxes(BaseTensor):

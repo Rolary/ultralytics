@@ -151,7 +151,6 @@ def check_source(source):
     webcam, screenshot, from_img, in_memory, tensor = False, False, False, False, False
     if isinstance(source, (str, int, Path)):  # int for local usb camera
         source = str(source)
-        is_file = Path(source).suffix[1:] in (IMG_FORMATS | VID_FORMATS)
         is_url = source.lower().startswith(("https://", "http://", "rtsp://", "rtmp://", "tcp://"))
         # 支持从对象存储中读取文件名称
         cos_file_name = ""
@@ -169,8 +168,8 @@ def check_source(source):
                 if "attachment;filename" in disposition_parameters:
                     cos_file_name = disposition_parameters["attachment;filename"][0].replace('"', "").replace("'", "")
 
-        is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS) or Path(cos_file_name).suffix[1:].lower() in (
-            IMG_FORMATS + VID_FORMATS
+        is_file = Path(source).suffix[1:] in (IMG_FORMATS | VID_FORMATS) or Path(cos_file_name).suffix[1:].lower() in (
+            IMG_FORMATS | VID_FORMATS
         )
         webcam = source.isnumeric() or source.endswith(".streams") or (is_url and not is_file)
         screenshot = source.lower() == "screen"
