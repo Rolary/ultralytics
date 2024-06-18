@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 # 获取当前文件的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -11,16 +11,15 @@ sys.path.insert(0, parent_dir)
 
 # 打印sys.path以确认
 print(f"sys.path: {sys.path}")
-import json
 import base64
 import hashlib
+import inspect
 import io
 import json
 import time
 
 import requests
 import yaml
-import inspect
 from flask import Flask, jsonify, request
 from PIL import Image
 
