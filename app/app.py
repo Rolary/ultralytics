@@ -1,14 +1,15 @@
-import json
 import base64
-import requests
-import time
 import hashlib
-
-from flask import Flask, request, jsonify
-from ultralytics import YOLO
-from PIL import Image
 import io
+import json
+import time
+
+import requests
 import yaml
+from flask import Flask, jsonify, request
+from PIL import Image
+
+from ultralytics import YOLO
 
 app = Flask(__name__)
 # 读取YAML配置文件

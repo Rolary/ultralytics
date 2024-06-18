@@ -3,7 +3,7 @@ import base64
 import os
 import random
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
 import numpy as np
 import torch
