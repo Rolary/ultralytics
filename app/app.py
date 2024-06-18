@@ -1,3 +1,17 @@
+import sys
+import os
+
+# 获取当前文件的目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 获取上一级目录的路径
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+
+sys.path.insert(0, parent_dir)
+
+# 打印sys.path以确认
+print(f"sys.path: {sys.path}")
+import json
 import base64
 import hashlib
 import io
@@ -6,11 +20,13 @@ import time
 
 import requests
 import yaml
+import inspect
 from flask import Flask, jsonify, request
 from PIL import Image
 
 from ultralytics import YOLO
 
+print(inspect.getfile(YOLO))
 app = Flask(__name__)
 # 读取YAML配置文件
 with open("config.yml", "r") as config_file:
@@ -19,7 +35,7 @@ with open("config.yml", "r") as config_file:
 # 访问配置项
 # 预加载YOLO模型
 model = YOLO("../model/page/model_- 18 december 2023 17_37.pt")
-modelV2 = YOLO("../model/page/model_- 22 december 2023 11_48.pt")
+modelV2 = YOLO("../model/page/model_latest.pt")
 OCR_API_URL = "https://open.easst.cn/openapi/rest/common/ocr"
 OCR_APP_ID = config["ocr"]["app_id"]
 OCR_APP_SECRET = config["ocr"]["app_secret"]
